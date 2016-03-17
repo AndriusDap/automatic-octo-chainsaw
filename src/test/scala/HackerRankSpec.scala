@@ -61,4 +61,20 @@ class HackerRankSpec extends FlatSpec with Matchers {
   "exp" must "correctly exponentiate" in {
     exp(20) should be(2423600.1887 +- 0.0001)
   }
+
+  "copressedWord" must "not cahnge single letter" in {
+    StringSolution.compressedWord("a") should be("a")
+  }
+
+  "copressedWord" must "compress a word" in {
+    StringSolution.compressedWord("aaa") should be("a3")
+  }
+
+  "compression" must "compress a single word" in {
+    StringSolution.compressed("aaaa") should equal("a4")
+  }
+
+  "compression" must "compress a given phrase" in {
+    StringSolution.compressed("aaabaaaaccaaaaba") should equal("a3ba4c2a4ba")
+  }
 }
