@@ -47,12 +47,12 @@ class GameMachine(val trump: Suite) {
     units match {
       case head :: tail =>
         val defence = defender.hand.find(canDefend(head, _))
-        if (defence.isDefined) {
-          println(s"Defending against $head with ${defence.get}")
-          defend(attacker, defender - defence.get, battlefield :+ head :+ defence.get, tail)
-        } else {
+        defence.fold {
           println(s"Cannot defend against $head")
           nextTurnAfterLoss(attacker, defender, battlefield, units)
+        } { d =>
+          println(s"Defending against $head with $d")
+          defend(attacker, defender - d, battlefield :+ head :+ d, tail)
         }
       case Nil => attack(attacker, defender, battlefield)
     }
