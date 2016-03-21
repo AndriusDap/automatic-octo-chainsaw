@@ -1,15 +1,24 @@
 package com.andrius.durak
 
-import com.andrius.durak.Implicits._
-
 object Game {
   def main(args: Array[String]) = {
     val lines = scala.io.Source.fromFile(args.head).getLines()
-    val trump = lines.find(_ => true).get
-    val results = lines.map { line =>
-      val cards = line.split(" \\| ").map(_.split(" ").map(Card(trump)))
-      GameMachine.play(cards(0).toList, cards(1).toList)
+    val trump = Suite(lines.find(_ => true).get.head)
+    if(trump.isEmpty)
+      println("Impossible trump suite passed in")
+    else {
+      val machine: GameMachine = new GameMachine(trump.get)
+      val results = lines.map { line =>
+        val cards = line.split(" \\| ").map(_.split(" ").map(c => Card(Suite(c.head), Rank(c.last))))
+        if (cards.map(isValid).foldLeft {true} {_ && _})
+          Some(machine.play(cards(0).flatten.toList, cards(1).flatten.toList))
+        else None
+      }
+      println(s"Game results: $results")
     }
-    println(s"Game results: ${results.asString}")
+  }
+
+  def isValid: (Array[Option[Card]]) => Boolean = {
+    c => c.flatten.length == c.length
   }
 }
